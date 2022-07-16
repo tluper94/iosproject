@@ -4,12 +4,12 @@ import tw from '../../libs/TailwindConfig';
 import { Dimensions } from 'react-native';
 
 const Cart = ({ navHeight }) => {
-  const [pullDownHeight, setPullDownHeight] = useState(70);
+  const [pullDownHeight, setPullDownHeight] = useState(60);
   const [cartWidth, setCartWidth] = useState(0);
 
   const onMove = e => {
     const height = pullDownHeight + e.nativeEvent.locationY * 0.1;
-    if (height > 70) {
+    if (height > 60) {
       setPullDownHeight(height);
     }
   };
@@ -17,7 +17,7 @@ const Cart = ({ navHeight }) => {
   const onMoveEnd = e => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     if (e.nativeEvent.locationY <= 0) {
-      setPullDownHeight(70);
+      setPullDownHeight(60);
     } else {
       setPullDownHeight(160);
     }
@@ -34,22 +34,30 @@ const Cart = ({ navHeight }) => {
       onLayout={getCartWidth}
       style={tw`top-[${navHeight}px] px-1 pb-1 z-10 rounded-b-3xl absolute h-${pullDownHeight} w-full bg-primary`}
     >
-      <View style={tw`flex flex-row w-full justify-end h-8`}>
-        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.2 }}>
+      <View style={tw`flex flex-row w-full justify-end h-5`}>
+        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.18 }}>
           <Text
-            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.1 }}
+            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.06 }}
           >
             Unit Price
           </Text>
 
-          <Text style={{ ...styles.cartTopLabel }}>Quantity</Text>
+          <Text
+            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.04 }}
+          >
+            Quantity
+          </Text>
 
-          <Text style={{ ...styles.cartTopLabel }}>Unit Price</Text>
+          <Text
+            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.08 }}
+          >
+            Sub Total
+          </Text>
 
-          <Text style={{ ...styles.cartTopLabel }}>Unit Price</Text>
+          <Text style={{ ...styles.cartTopLabel }}>Discount</Text>
         </View>
       </View>
-      <View style={tw`h-${pullDownHeight - 20} w-full bg-gray-white`}></View>
+      <View style={tw`h-${pullDownHeight - 15} w-full bg-gray-white`}></View>
       <View
         style={tw`flex-1 flex flex-row justify-evenly items-center rounded-b-3xl w-full bg-gray-black `}
       >
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 10,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#2c7be5',
+    borderTopColor: '#4597F6',
     borderTopWidth: 10
   }),
   insideArrow: {
