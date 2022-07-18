@@ -6,6 +6,7 @@ import Cart from './components/cart/Cart';
 import Navbar from './components/navbar/Navbar';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import SquareBtn from './components/squareBtn/SquareBtn';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 //Icon imports
 import {
@@ -21,10 +22,11 @@ import {
   SquareCheck,
   ThreeDots
 } from './components/icons/Icons';
-import { Icon } from '@rneui/themed';
 
 export default function App() {
   const [navHeight, setNavHeight] = useState(0);
+
+  EStyleSheet.build();
 
   const getNavHeight = e => {
     setNavHeight(e.nativeEvent.layout.height);
@@ -56,7 +58,7 @@ export default function App() {
         </View>
         <View style={tw`flex-1 h-full bg-darkGrey`}></View>
         <View
-          style={tw`flex justify-center w-32 px-1 mr-1  ml-1 h-full bg-darkGrey`}
+          style={tw`flex justify-center w-32 px-2 mr-1  ml-1 h-full bg-darkGrey`}
         >
           {blueBtns.map((btn, idx) => (
             <View
@@ -159,7 +161,7 @@ const greenBtns = [
 const blueBtns = [
   {
     color: '#4597F6',
-    width: 115,
+    width: 110,
     height: 92,
     icon: (
       <View>
@@ -168,23 +170,23 @@ const blueBtns = [
             position: 'relative',
             marginTop: 12,
             zIndex: 1,
-            marginRight: 10
+            marginRight: 15
           }}
         >
           <BoxSearch
-            width={75}
-            height={75}
+            width={65}
+            height={65}
             stroke="#e7e7e7"
             strokeWidth={2}
             fill="#e7e7e7"
           />
         </View>
-        <View style={{ position: 'absolute', left: 30, top: 20 }}>
+        <View style={{ position: 'absolute', left: 25, top: 20 }}>
           <Search
-            width={40}
-            height={40}
-            stroke="#e7e7e736"
-            strokeWidth={1}
+            width={35}
+            height={35}
+            stroke="#e7e7e78e"
+            strokeWidth={2}
             fill="#e7e7e7c7"
           />
         </View>
@@ -193,13 +195,13 @@ const blueBtns = [
   },
   {
     color: '#4597F6',
-    width: 115,
+    width: 110,
     height: 92,
     icon: (
       <Printer
         marginTop={10}
-        width={75}
-        height={75}
+        width={65}
+        height={65}
         stroke="#e7e7e7"
         strokeWidth={5}
         fill="#e7e7e7"
@@ -208,7 +210,7 @@ const blueBtns = [
   },
   {
     color: '#4597F6',
-    width: 115,
+    width: 110,
     height: 92,
     icon: (
       <ThreeDots
@@ -222,13 +224,13 @@ const blueBtns = [
   },
   {
     color: '#4597F6',
-    width: 115,
+    width: 110,
     height: 92,
     icon: (
       <DollarSign
         marginTop={10}
-        width={75}
-        height={75}
+        width={65}
+        height={65}
         stroke="#e7e7e7"
         fill="#e7e7e7"
       />
@@ -239,13 +241,13 @@ const blueBtns = [
     icon: (
       <SquareCheck
         marginTop={10}
-        width={75}
-        height={75}
+        width={65}
+        height={65}
         stroke="#e7e7e7"
         fill="#e7e7e7"
       />
     ),
-    width: 115,
+    width: 110,
     height: 92
   }
 ];
