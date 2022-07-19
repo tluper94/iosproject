@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import tw from './libs/TailwindConfig';
 import Cart from './components/cart/Cart';
@@ -26,6 +26,8 @@ import { Icon } from '@rneui/themed';
 export default function App() {
   const [navHeight, setNavHeight] = useState(0);
 
+  const screenHeight = Dimensions.get('window').height;
+
   const getNavHeight = e => {
     setNavHeight(e.nativeEvent.layout.height);
   };
@@ -39,11 +41,18 @@ export default function App() {
     changeScreenOrientation();
   }, []);
 
+  console.log(screenHeight * 0.29);
+
   return (
     <View style={tw`bg-gray-black flex-1 flex-col`}>
       <Navbar getNavHeight={getNavHeight} />
       <Cart navHeight={navHeight} />
-      <View style={{ ...tw`w-full mb-2 -z-1`, height: '29%' }} />
+      <View
+        style={{
+          ...tw`w-full mb-2 -z-1`,
+          height: screenHeight * 0.37 - navHeight
+        }}
+      />
       <View style={tw`w-full flex-1 flex flex-row`}>
         <View
           style={tw`flex justify-center w-35 pl-2 pr-3 pt-1 mr-1 h-full bg-darkGrey`}

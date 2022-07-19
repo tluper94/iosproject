@@ -3,6 +3,8 @@ import { useRef, useEffect, useState } from 'react';
 import tw from '../../libs/TailwindConfig';
 import { Dimensions } from 'react-native';
 
+const screenHeight = Dimensions.get('window').height;
+
 const Cart = ({ navHeight }) => {
   const [pullDownHeight, setPullDownHeight] = useState(29);
   const [cartWidth, setCartWidth] = useState(0);
