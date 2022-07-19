@@ -1,8 +1,8 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 
-const SquareBtn = ({ header, icon, footer, color, width, height, title }) => {
+const SquareBtn = ({ header, icon, footer, color, width, aspect, title }) => {
   return (
-    <Pressable style={styles.button(color, width, height)}>
+    <Pressable style={styles.button(color, width, aspect)}>
       {header && (
         <View style={styles.headerContainer}>
           <Text style={styles.header}>{header}</Text>
@@ -16,7 +16,7 @@ const SquareBtn = ({ header, icon, footer, color, width, height, title }) => {
 };
 
 const styles = StyleSheet.create({
-  button: (color, width, height) => ({
+  button: (color, width, aspect) => ({
     flexDirection: 'column',
     shadowColor: '#000000ad',
     shadowOffset: { width: 6, height: 5 },
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: width,
-    height: height,
+    aspectRatio: 10 / aspect,
     borderRadius: 10,
     elevation: 2,
     backgroundColor: color
