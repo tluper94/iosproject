@@ -7,6 +7,7 @@ const Navbar = ({ getNavHeight }) => {
     <View onLayout={getNavHeight} style={tw`pt-4 bg-gray-black`}>
       <Header
         backgroundColor="black"
+        containerStyle={{ borderBottomColor: '#919191', marginBottom: 2 }}
         leftComponent={
           <View style={tw`flex flex-row items-center`}>
             <Icon

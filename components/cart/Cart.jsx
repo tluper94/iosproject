@@ -1,139 +1,283 @@
-import { LayoutAnimation, View, Text, StyleSheet } from 'react-native';
-import { useRef, useEffect, useState } from 'react';
-import tw from '../../libs/TailwindConfig';
+import { View, Text, StyleSheet } from 'react-native';
+import colors from '../../theme/colors';
+import { useState, useEffect } from 'react';
+
 import { Dimensions } from 'react-native';
+
+import useScreenOrientation from '../../hooks/useScreenOrientaition';
 
 const screenHeight = Dimensions.get('window').height;
 
 const Cart = ({ navHeight }) => {
-  const [pullDownHeight, setPullDownHeight] = useState(29);
   const [cartWidth, setCartWidth] = useState(0);
+  const [style, setStyle] = useState({});
 
-  const onMove = e => {
-    const height = pullDownHeight + e.nativeEvent.locationY * 0.1;
-    if (height > 29) {
-      setPullDownHeight(height);
-    }
-  };
+  const orientation = useScreenOrientation();
 
-  const onMoveEnd = e => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    if (e.nativeEvent.locationY <= 0) {
-      setPullDownHeight(29);
-    } else {
-      setPullDownHeight(85);
-    }
-  };
-
-  console.log(cartWidth * 0.02);
+  useEffect(() => {
+    orientation === 'portrait' ? setStyle(portraitStyles) : setStyle(styles);
+  }, [orientation]);
 
   const getCartWidth = e => {
     setCartWidth(e.nativeEvent.layout.width);
   };
 
-  return (
-    <View
-      onLayout={getCartWidth}
-      style={{
-        ...tw`top-[${navHeight}px] px-1 pb-1 z-10 rounded-b-3xl absolute w-full bg-primary`,
-        height: `${pullDownHeight}%`
-      }}
-    >
-      <View style={tw`flex flex-row w-full justify-end h-5`}>
-        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.18 }}>
+  const displayTopLabels = () => {
+    if (orientation === 'portrait') {
+      return (
+        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.16 }}>
           <Text
-            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.06 }}
+            style={{
+              ...style.topLabel,
+              marginRight: cartWidth * 0.07
+            }}
           >
             Unit Price
           </Text>
-
           <Text
-            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.04 }}
+            style={{
+              ...style.topLabel,
+              marginRight: cartWidth * 0.07
+            }}
           >
             Quantity
           </Text>
-
           <Text
-            style={{ ...styles.cartTopLabel, marginRight: cartWidth * 0.08 }}
+            style={{
+              ...style.topLabel,
+              marginRight: cartWidth * 0.05
+            }}
           >
-            Sub Total
+            Subtotal
           </Text>
+          <Text
+            style={{
+              ...style.topLabel
+            }}
+          >
+            Discount
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.1 }}>
+          <Text
+            style={{
+              ...style.topLabel,
+              marginRight: cartWidth * 0.07
+            }}
+          >
+            Qty
+          </Text>
+          <Text
+            style={{
+              ...style.topLabel
+            }}
+          >
+            Subtotal
+          </Text>
+        </View>
+      );
+    }
+  };
 
-          <Text style={{ ...styles.cartTopLabel }}>Discount</Text>
-        </View>
-      </View>
-      <View
-        style={{
-          ...tw`w-full bg-gray-white flex-1`
-        }}
-      ></View>
-      <View
-        style={tw`h-12 flex flex-row justify-evenly items-center rounded-b-3xl w-full bg-gray-black `}
-      >
-        <View style={styles.cartLabelContainer}>
-          <Text style={styles.cartLabel}>Sub Total:</Text>
-          <Text style={styles.cartLabelAmount}>$0.00</Text>
-        </View>
+  return (
+    <View onLayout={getCartWidth} style={style.cartContainer}>
+      <View style={style.topLabelsContainer}>{displayTopLabels()}</View>
+      <View style={style.cartView}></View>
+      <View style={style.cartFooter}>
+        {orientation === 'portrait' ? (
+          <>
+            <View style={style.cartLabelContainer}>
+              <Text style={style.cartLabel}>Sub Total:</Text>
+              <Text style={style.cartLabelAmount}>$0.00</Text>
+            </View>
+            <View style={style.cartLabelContainer}>
+              <Text style={style.cartLabel}>Taxes:</Text>
+              <Text style={style.cartLabelAmount}>$0.00</Text>
+            </View>
+            <View style={style.cartLabelContainer}>
+              <Text style={style.cartLabel}>Total:</Text>
+              <Text style={style.cartLabelAmount}>$0.00</Text>
+            </View>
 
-        <View style={styles.cartLabelContainer}>
-          <Text style={styles.cartLabel}>Taxes:</Text>
-          <Text style={styles.cartLabelAmount}>$0.00</Text>
-        </View>
-
-        <View style={styles.cartLabelContainer}>
-          <Text style={styles.cartLabel}>Total:</Text>
-          <Text style={styles.cartLabelAmount}>$0.00</Text>
-        </View>
-
-        <View style={styles.cartLabelContainer}>
-          <Text style={styles.cartLabel}>Balance:</Text>
-          <Text style={styles.cartLabelAmount}>$0.00</Text>
-        </View>
-      </View>
-      <View
-        onStartShouldSetResponder={() => true}
-        onResponderMove={onMove}
-        onResponderEnd={onMoveEnd}
-        hitSlop={{ top: 25, bottom: 40, left: 40, right: 25 }}
-        style={styles.arrow(cartWidth)}
-      >
-        <View style={styles.insideArrow}></View>
+            <View style={style.cartLabelContainer}>
+              <Text style={style.cartLabel}>Balance:</Text>
+              <Text style={style.cartLabelAmount}>$0.00</Text>
+            </View>
+          </>
+        ) : (
+          <View style={style.cartLabelContainer}>
+            <Text style={style.cartLabel}>Total:</Text>
+            <Text style={style.cartLabelAmount}>$0.00</Text>
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  arrow: cartwidth => ({
-    position: 'absolute',
-    width: 200,
-    height: 0,
-    top: '100%',
-    left: cartwidth * 0.5 - 100,
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: '#4597F6',
-    borderTopWidth: 10
-  }),
-  insideArrow: {
-    position: 'relative',
-    width: 185,
-    height: 0,
-    top: -7.5,
-    left: -2,
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: 'white',
-    borderTopWidth: 5
+// const styles = StyleSheet.create({
+//   arrow: cartwidth => ({
+//     position: 'absolute',
+//     width: 200,
+//     height: 0,
+//     top: '100%',
+//     left: cartwidth * 0.5 - 100,
+//     borderLeftWidth: 10,
+//     borderRightWidth: 10,
+//     borderLeftColor: 'transparent',
+//     borderRightColor: 'transparent',
+//     borderTopColor: '#4597F6',
+//     borderTopWidth: 10
+//   }),
+//   insideArrow: {
+//     position: 'relative',
+//     width: 185,
+//     height: 0,
+//     top: -7.5,
+//     left: -2,
+//     borderLeftWidth: 5,
+//     borderRightWidth: 5,
+//     borderLeftColor: 'transparent',
+//     borderRightColor: 'transparent',
+//     borderTopColor: 'white',
+//     borderTopWidth: 5
+//   },
+//   cartLabelContainer: tw`flex flex-row`,
+//   cartLabel: tw`text-xl font-bold text-primary mr-4`,
+//   cartLabelAmount: tw`text-xl font-bold text-white mr-4`,
+//   cartTopLabel: tw`text-base font-bold text-white mr-4`
+// });
+
+const portraitStyles = StyleSheet.create({
+  cartContainer: {
+    width: '100%',
+    height: '40%',
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingLeft: '.6%',
+    paddingRight: '.6%',
+    paddingTop: '1%',
+    paddingBottom: '.6%'
   },
-  cartLabelContainer: tw`flex flex-row`,
-  cartLabel: tw`text-xl font-bold text-primary mr-4`,
-  cartLabelAmount: tw`text-xl font-bold text-white mr-4`,
-  cartTopLabel: tw`text-base font-bold text-white mr-4`
+  cartView: {
+    width: '100%',
+    flex: 1,
+    backgroundColor: colors.white,
+    borderTopEndRadius: 18,
+    borderTopStartRadius: 18
+  },
+  cartFooter: {
+    width: '100%',
+    height: '10%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    backgroundColor: colors.black,
+    borderBottomEndRadius: 18,
+    borderBottomStartRadius: 18
+  },
+  cartLabelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  cartLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginRight: '.5%'
+  },
+  cartLabelAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginLeft: '1%'
+  },
+  orderNavContainer: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row'
+  },
+  topLabelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  labelContainer: {
+    flexDirection: 'row'
+  },
+  topLabel: {
+    color: colors.white,
+    fontSize: 18
+  }
+});
+
+const styles = StyleSheet.create({
+  cartContainer: {
+    width: '35%',
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingLeft: '.6%',
+    paddingRight: '.6%',
+    paddingTop: '1%',
+    paddingBottom: '.6%',
+    marginRight: '.2%'
+  },
+  cartView: {
+    width: '100%',
+    flex: 1,
+    backgroundColor: colors.white,
+    borderTopEndRadius: 18,
+    borderTopStartRadius: 18
+  },
+  cartFooter: {
+    width: '100%',
+    height: '8%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: colors.black,
+    borderBottomEndRadius: 18,
+    borderBottomStartRadius: 18
+  },
+  cartLabelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '5%'
+  },
+  cartLabel: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginRight: '1%'
+  },
+  cartLabelAmount: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginLeft: '1%'
+  },
+  orderNavContainer: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row'
+  },
+  topLabelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  labelContainer: {
+    flexDirection: 'row'
+  },
+  topLabel: {
+    color: colors.white,
+    fontSize: 20
+  }
 });
 
 export default Cart;
