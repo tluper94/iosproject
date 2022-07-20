@@ -28,6 +28,13 @@ export default function App() {
   const orderViewPortrait = () => (
     <View style={portraitStyles.orderViewContainer(navHeight, screenHeight)}>
       <Cart />
+      <View
+        style={{
+          height: '10%',
+          backgroundColor: colors.darkGrey,
+          borderRadius: 18
+        }}
+      ></View>
       <View style={portraitStyles.orderNavContainer}>
         <View style={portraitStyles.categoryContainer}></View>
         <View style={portraitStyles.menuItemsContainer}></View>
@@ -37,7 +44,16 @@ export default function App() {
 
   const orderViewLandscape = () => (
     <View style={styles.orderViewContainer(navHeight, screenHeight)}>
-      <Cart />
+      <View style={{ width: '35%', marginRight: '.2%' }}>
+        <Cart />
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: colors.darkGrey,
+            borderRadius: 18
+          }}
+        ></View>
+      </View>
       <View style={styles.categoryContainer}></View>
       <View style={styles.menuItemsContainer}></View>
     </View>

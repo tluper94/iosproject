@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import colors from '../../theme/colors';
 import { useState, useEffect } from 'react';
 
 import { Dimensions } from 'react-native';
+
+import cartData from '../../mockData';
 
 import useScreenOrientation from '../../hooks/useScreenOrientaition';
 
@@ -25,81 +27,230 @@ const Cart = ({ navHeight }) => {
   const displayTopLabels = () => {
     if (orientation === 'portrait') {
       return (
-        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.16 }}>
-          <Text
+        <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.14 }}>
+          <View
             style={{
-              ...style.topLabel,
+              width: cartWidth * 0.1,
+              flexDirection: 'row',
+              justifyContent: 'center',
               marginRight: cartWidth * 0.07
             }}
           >
-            Unit Price
-          </Text>
-          <Text
+            <Text style={style.topLabel}>Unit Price</Text>
+          </View>
+          <View
             style={{
-              ...style.topLabel,
+              width: cartWidth * 0.1,
+              flexDirection: 'row',
+              justifyContent: 'center',
               marginRight: cartWidth * 0.07
             }}
           >
-            Quantity
-          </Text>
-          <Text
+            <Text style={style.topLabel}>Quantity</Text>
+          </View>
+          <View
             style={{
-              ...style.topLabel,
+              width: cartWidth * 0.1,
+              flexDirection: 'row',
+              justifyContent: 'center',
               marginRight: cartWidth * 0.05
             }}
           >
-            Subtotal
-          </Text>
-          <Text
+            <Text style={style.topLabel}>Subtotal</Text>
+          </View>
+          <View
             style={{
-              ...style.topLabel
+              width: cartWidth * 0.1,
+              flexDirection: 'row',
+              justifyContent: 'center'
             }}
           >
-            Discount
-          </Text>
+            <Text style={style.topLabel}>Discount</Text>
+          </View>
         </View>
       );
     } else {
       return (
         <View style={{ flexDirection: 'row', marginRight: cartWidth * 0.1 }}>
-          <Text
+          <View
             style={{
-              ...style.topLabel,
+              width: cartWidth * 0.2,
+              flexDirection: 'row',
+              justifyContent: 'center',
               marginRight: cartWidth * 0.07
             }}
           >
-            Qty
-          </Text>
-          <Text
+            <Text style={style.topLabel}>Qty</Text>
+          </View>
+          <View
             style={{
-              ...style.topLabel
+              width: cartWidth * 0.2,
+              flexDirection: 'row',
+              justifyContent: 'center'
             }}
           >
-            Subtotal
-          </Text>
+            <Text style={style.topLabel}>Subtotal</Text>
+          </View>
         </View>
       );
     }
   };
 
+  const getCartTotal = () => {
+    const taxRate = 0.0625;
+    const subTotal = cartData
+      .map(({ price, quantity }) => price * quantity)
+      .reduce((prev, curr) => prev + curr);
+    const taxes = subTotal * taxRate;
+    const total = subTotal + taxes;
+    return {
+      subTotal,
+      total,
+      taxes
+    };
+  };
+
+  const Item = ({ item, price, quantity }) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          borderBottomWidth: 1,
+          borderBottomColor: '#a5a5a5',
+          height: screenHeight * 0.07,
+          paddingTop: screenHeight * 0.01,
+          paddingLeft: cartWidth * 0.02
+        }}
+      >
+        {orientation == 'portrait' ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              width: '100%'
+            }}
+          >
+            <Text style={{ fontSize: 18, marginRight: 'auto' }}>{item}</Text>
+            <View
+              style={{ flexDirection: 'row', marginRight: cartWidth * 0.14 }}
+            >
+              <View
+                style={{
+                  width: cartWidth * 0.1,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginRight: cartWidth * 0.07
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>${price}</Text>
+              </View>
+              <View
+                style={{
+                  width: cartWidth * 0.1,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginRight: cartWidth * 0.07
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>{quantity}</Text>
+              </View>
+              <View
+                style={{
+                  width: cartWidth * 0.1,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginRight: cartWidth * 0.05
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>
+                  ${(price * quantity).toFixed(2)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: cartWidth * 0.1,
+                  flexDirection: 'row',
+                  justifyContent: 'center'
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>0</Text>
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              width: '100%'
+            }}
+          >
+            <Text style={{ fontSize: 18, marginRight: 'auto' }}>{item}</Text>
+            <View
+              style={{ flexDirection: 'row', marginRight: cartWidth * 0.1 }}
+            >
+              <View
+                style={{
+                  width: cartWidth * 0.2,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginRight: cartWidth * 0.07
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>{quantity}</Text>
+              </View>
+              <View
+                style={{
+                  width: cartWidth * 0.2,
+                  flexDirection: 'row',
+                  justifyContent: 'center'
+                }}
+              >
+                <Text style={{ fontSize: 18 }}>
+                  ${(price * quantity).toFixed(2)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => <Item {...item} />;
+
   return (
     <View onLayout={getCartWidth} style={style.cartContainer}>
       <View style={style.topLabelsContainer}>{displayTopLabels()}</View>
-      <View style={style.cartView}></View>
+      <View style={style.cartView}>
+        <View style={{ height: '100%' }}>
+          <FlatList
+            data={cartData}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+          />
+        </View>
+      </View>
       <View style={style.cartFooter}>
         {orientation === 'portrait' ? (
           <>
             <View style={style.cartLabelContainer}>
               <Text style={style.cartLabel}>Sub Total:</Text>
-              <Text style={style.cartLabelAmount}>$0.00</Text>
+              <Text style={style.cartLabelAmount}>
+                ${getCartTotal().subTotal.toFixed(2)}
+              </Text>
             </View>
             <View style={style.cartLabelContainer}>
               <Text style={style.cartLabel}>Taxes:</Text>
-              <Text style={style.cartLabelAmount}>$0.00</Text>
+              <Text style={style.cartLabelAmount}>
+                ${getCartTotal().taxes.toFixed(2)}
+              </Text>
             </View>
             <View style={style.cartLabelContainer}>
               <Text style={style.cartLabel}>Total:</Text>
-              <Text style={style.cartLabelAmount}>$0.00</Text>
+              <Text style={style.cartLabelAmount}>
+                ${getCartTotal().total.toFixed(2)}
+              </Text>
             </View>
 
             <View style={style.cartLabelContainer}>
@@ -110,7 +261,9 @@ const Cart = ({ navHeight }) => {
         ) : (
           <View style={style.cartLabelContainer}>
             <Text style={style.cartLabel}>Total:</Text>
-            <Text style={style.cartLabelAmount}>$0.00</Text>
+            <Text style={style.cartLabelAmount}>
+              ${getCartTotal().total.toFixed(2)}
+            </Text>
           </View>
         )}
       </View>
@@ -216,14 +369,14 @@ const portraitStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   cartContainer: {
-    width: '35%',
-    height: '100%',
+    width: '100%',
+    height: '88%',
     backgroundColor: colors.primary,
     borderWidth: 1,
     borderRadius: 18,
     paddingLeft: '.6%',
     paddingRight: '.6%',
-    paddingTop: '1%',
+    paddingTop: '.09%',
     paddingBottom: '.6%',
     marginRight: '.2%'
   },
